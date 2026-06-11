@@ -683,7 +683,7 @@ body{
   <div class="set-sec">
     <div class="set-sec-title">AI Auto-Tagging (Groq)</div>
     <div class="set-note">Automatically generate tags for new items using AI. Your key is stored locally in your browser and never shared.</div>
-    <div class="form-row"><label class="form-lbl">Groq API Key</label><input class="form-input" id="groq-key-input" type="password" placeholder="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"></div>
+    <div class="form-row"><label class="form-lbl">Groq API Key</label><input class="form-input" id="groq-key-input" type="password" placeholder="gsk_..."></div>
     <div class="form-actions"><button class="btn primary" id="save-groq-btn">Save Key</button></div>
   </div>
 
@@ -961,11 +961,10 @@ async function ingest(rawUrl){
     try{
         const meta=await fetchMeta(url);
         
-        // AI Auto-Tagging Integration
+        // AI Auto-Tagging Integration (Hardcoded Fallback)
         let autoTags = [];
-        const groqKey = localStorage.getItem('vias_groq_key');
+        const groqKey = localStorage.getItem('vias_groq_key') || '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';
         if(groqKey && (meta.title || meta.description)){
-            toast('Generating AI tags...');
             autoTags = await generateAITags(meta.title, meta.description, groqKey);
         }
 
@@ -975,7 +974,7 @@ async function ingest(rawUrl){
             description:meta.description||'',
             thumbnail:meta.thumbnail||null,
             domain:meta.domain,
-            tags: autoTags, // Inject AI tags here
+            tags: autoTags, 
             collections:[],notes:'',
             createdAt:Date.now(),updatedAt:Date.now(),openCount:0,favorite:false,isLocalFile:false
         };
@@ -1022,13 +1021,12 @@ function wire(){
     $('btn-settings').addEventListener('click',()=>{
         $('st-items').textContent=S.items.length;
         $('st-cols').textContent=S.collections.length;
-        const savedKey = localStorage.getItem('vias_groq_key');
+        const savedKey = localStorage.getItem('vias_groq_key') || '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';
         if(savedKey) $('groq-key-input').value = savedKey;
         openModal('settings-modal');
     });
     $('btn-settings-m').addEventListener('click',()=>{$('btn-settings').click();closeSidebarIfMobile()});
     
-    // Groq Key Saver
     $('save-groq-btn').addEventListener('click', () => {
         const key = $('groq-key-input').value.trim();
         localStorage.setItem('vias_groq_key', key);
