@@ -247,7 +247,7 @@ body{
 #detail-panel{
     position:absolute;right:0;top:0;bottom:0;width:400px;flex-shrink:0;
     border-left:0.5px solid var(--border-1);
-    background:var(--bg);z-index:1060; /* Above lightbox */
+    background:var(--bg);z-index:1060; 
     transform:translateX(100%);
     transition:transform .4s var(--ease);
     display:flex;flex-direction:column;overflow-y:auto;
@@ -330,11 +330,10 @@ body{
 .dp-btn.danger{background:rgba(255,69,58,0.15);color:var(--danger)}
 .dp-btn.danger:hover{background:rgba(255,69,58,0.25)}
 
-/* --- LIGHTBOX --- */
 #lightbox {
     position: fixed;
     inset: 0;
-    z-index: 1050; /* Below detail panel, above main app */
+    z-index: 1050; 
     display: none;
     flex-direction: column;
     background: rgba(0,0,0,0.95);
@@ -660,7 +659,6 @@ body{
   </div>
 </div>
 
-<!-- LIGHTBOX -->
 <div id="lightbox">
     <div class="lb-header">
         <button class="lb-btn" id="lb-close"><i class="fas fa-xmark"></i></button>
@@ -681,6 +679,14 @@ body{
 <div class="modal-bg" id="dash-modal"><div class="modal wide"><div class="modal-hd"><span class="modal-title">Dashboard</span><button class="modal-x" data-modal="dash-modal">Done</button></div><div class="modal-body" id="dash-body"></div></div></div>
 <div class="modal-bg" id="ie-modal"><div class="modal"><div class="modal-hd"><span class="modal-title">Import / Export</span><button class="modal-x" data-modal="ie-modal">Done</button></div><div class="modal-body"><div class="ie-grid"><div class="ie-card"><div class="ie-card-title">Export JSON</div><div class="ie-card-desc">Complete backup — all items, collections, and canvas positions.</div><button class="btn" id="do-export-json">Export JSON</button></div><div class="ie-card"><div class="ie-card-title">Export CSV</div><div class="ie-card-desc">Simplified export — title, URL, type, tags, domain, opens.</div><button class="btn" id="do-export-csv">Export CSV</button></div><div class="ie-card"><div class="ie-card-title">Import JSON</div><div class="ie-card-desc">Restore from a previous Vias.os JSON backup. Merges with existing archive.</div><button class="btn" id="do-import">Choose File</button><input type="file" id="import-file" accept=".json" style="display:none"></div><div class="ie-card"><div class="ie-card-title">Clear Archive</div><div class="ie-card-desc">Permanently delete all items and collections. This cannot be undone.</div><button class="btn danger" id="do-clear">Clear All Data</button></div></div></div></div></div>
 <div class="modal-bg" id="settings-modal"><div class="modal"><div class="modal-hd"><span class="modal-title">Settings</span><button class="modal-x" data-modal="settings-modal">Done</button></div><div class="modal-body">
+  
+  <div class="set-sec">
+    <div class="set-sec-title">AI Auto-Tagging (Groq)</div>
+    <div class="set-note">Automatically generate tags for new items using AI. Your key is stored locally in your browser and never shared.</div>
+    <div class="form-row"><label class="form-lbl">Groq API Key</label><input class="form-input" id="groq-key-input" type="password" placeholder="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"></div>
+    <div class="form-actions"><button class="btn primary" id="save-groq-btn">Save Key</button></div>
+  </div>
+
   <div class="set-sec"><div class="set-sec-title">Global Cloud Sync</div><div class="set-row"><span class="set-key">Connection</span><span class="set-val" id="st-mode">Shared Firestore</span></div><div class="set-row"><span class="set-key">Items Synced</span><span class="set-val" id="st-items">0</span></div><div class="set-row"><span class="set-key">Collections</span><span class="set-val" id="st-cols">0</span></div><div class="set-note" style="margin-top:12px">All users share the same global archive. Changes sync instantly across all devices.</div></div>
   <div class="set-sec"><div class="set-sec-title">Keyboard Shortcuts</div><div class="set-row"><span class="set-key">⌘K</span><span class="set-val">Focus search</span></div><div class="set-row"><span class="set-key">⌘S</span><span class="set-val">Save detail panel</span></div><div class="set-row"><span class="set-key">Esc</span><span class="set-val">Close panel / modal</span></div><div class="set-row"><span class="set-key">Paste</span><span class="set-val">Auto-ingest URL</span></div><div class="set-row"><span class="set-key">Drop</span><span class="set-val">Upload files</span></div><div class="set-row"><span class="set-key">Right-click</span><span class="set-val">Context menu on card</span></div></div>
 </div></div></div>
@@ -734,6 +740,44 @@ function favicon(d){return`https://www.google.com/s2/favicons?domain=${encodeURI
 
 async function fetchMeta(url){url=url.trim().replace(/[.,;:!?)\]]+$/,'');if(!/^https?:\/\//i.test(url))url='https://'+url;const d=domainOf(url);const type=detectType(url);if(type==='video'&&ytId(url)){let title=d;const oeUrl=`https://www.youtube.com/oembed?url=${encodeURIComponent(url)}&format=json`;try{const res=await fetch(oeUrl,{signal:AbortSignal.timeout(5000)});if(res.ok){const data=await res.json();if(data.title)title=data.title}}catch(e){}if(title===d){try{const res=await fetch(`https://corsproxy.io/?${encodeURIComponent(oeUrl)}`,{signal:AbortSignal.timeout(5000)});if(res.ok){const data=await res.json();if(data.title)title=data.title}}catch(e){}}if(title===d){try{const res=await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(oeUrl)}`,{signal:AbortSignal.timeout(5000)});if(res.ok){const j=await res.json();if(j.contents){const data=JSON.parse(j.contents);if(data.title)title=data.title}}}catch(e){}}if(title===d){try{const res=await fetch(`https://api.microlink.io/?url=${encodeURIComponent(url)}`,{signal:AbortSignal.timeout(5000)});if(res.ok){const json=await res.json();if(json.status==='success'&&json.data.title)title=json.data.title}}catch(e){}}return{title,description:'',thumbnail:ytThumb(url),domain:d,type}}if(type==='image'){const name=decodeURIComponent(url.split('/').pop().split('?')[0])||'Image';return{title:name,description:'',thumbnail:url,domain:d,type}}let title='',image='',description='';try{const res=await fetch(`https://api.opengraph.io/?url=${encodeURIComponent(url)}`,{signal:AbortSignal.timeout(6000)});if(res.ok){const json=await res.json();if(json.title)title=json.title;if(json.image)image=json.image;if(json.description)description=json.description}}catch(e){}if(!image){try{const res=await fetch(`https://api.microlink.io/?url=${encodeURIComponent(url)}`,{signal:AbortSignal.timeout(6000)});if(res.ok){const json=await res.json();if(json.status==='success'){title=title||json.data.title||'';image=image||json.data.image?.url||'';description=description||json.data.description||''}}}catch(e){}}if(!image){const parseHTML=(html)=>{const parser=new DOMParser();const doc=parser.parseFromString(html,'text/html');const getMeta=(prop)=>{let el=doc.querySelector(`meta[property="${prop}"]`)||doc.querySelector(`meta[name="${prop}"]`);return el?el.getAttribute('content'):null};title=title||getMeta('og:title')||doc.title||'';image=image||getMeta('og:image')||getMeta('twitter:image')||'';description=description||getMeta('og:description')||getMeta('description')||'';if(!image){const match=html.match(/<meta[^>]+property=["']og:image["'][^>]+content=["']([^"']+)["']/i)||html.match(/<meta[^>]+content=["']([^"']+)["'][^>]+property=["']og:image["']/i);if(match)image=match[1]}};const htmlProxies=[`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`,`https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`];for(const proxyUrl of htmlProxies){try{const res=await fetch(proxyUrl,{signal:AbortSignal.timeout(8000)});if(res.ok){parseHTML(await res.text());if(image)break}}catch(e){}}}if(!title)title=d||url;if(image&&!image.startsWith('http')&&!image.startsWith('data:')){try{image=new URL(image,url).href}catch(e){}}let finalThumb=image;if(!finalThumb)finalThumb=`https://image.thum.io/get/width/400/crop/800/maxAge/24/${encodeURIComponent(url)}`;return{title,description,thumbnail:finalThumb,domain:d,type}}
 function getFallbackIcon(domain,type){domain=domain||'';if(type==='pdf')return'<i class="fa-solid fa-file-pdf" style="color:#FF9F0A;"></i>';if(type==='document'||type==='html')return'<i class="fa-solid fa-file-code" style="color:#BF5AF2;"></i>';if(domain.includes('linkedin.com'))return'<i class="fa-brands fa-linkedin" style="color:#0A66C2;"></i>';if(domain.includes('reddit.com'))return'<i class="fa-brands fa-reddit" style="color:#FF4500;"></i>';if(domain.includes('github.com'))return'<i class="fa-brands fa-github" style="color:#fff;"></i>';if(domain.includes('pinterest.com')||domain.includes('pin.it'))return'<i class="fa-brands fa-pinterest" style="color:#E60023;"></i>';if(domain.includes('tiktok.com'))return'<i class="fa-brands fa-tiktok" style="color:#fff;"></i>';if(domain.includes('instagram.com'))return'<i class="fa-brands fa-instagram" style="color:#E1306C;"></i>';if(domain.includes('facebook.com'))return'<i class="fa-brands fa-facebook" style="color:#1877F2;"></i>';if(domain.includes('youtube.com')||domain.includes('youtu.be'))return'<i class="fa-brands fa-youtube" style="color:#FF453A;"></i>';if(type==='image')return'<i class="fa-solid fa-image" style="color:#30D158;"></i>';if(type==='video')return'<i class="fa-solid fa-video" style="color:#FF453A;"></i>';return'<i class="fa-solid fa-link" style="color:#0A84FF;"></i>'}
+
+// --- AI AUTO-TAGGING ---
+async function generateAITags(title, desc, key) {
+    try {
+        const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${key}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                model: 'llama3-8b-8192',
+                messages: [{
+                    role: 'system',
+                    content: 'You are a helpful archivist. Analyze the text and return a JSON object with a "tags" array containing 1-3 short, relevant categories. No markdown, just raw JSON.'
+                }, {
+                    role: 'user',
+                    content: `Title: ${title}\nDescription: ${desc}`
+                }],
+                temperature: 0.3,
+                max_tokens: 50
+            })
+        });
+        if (!res.ok) return [];
+        const data = await res.json();
+        const content = data.choices[0].message.content;
+        const match = content.match(/\{[\s\S]*\}/);
+        if (match) {
+            const parsed = JSON.parse(match[0]);
+            if (parsed.tags && Array.isArray(parsed.tags)) return parsed.tags;
+        }
+        return [];
+    } catch (e) {
+        console.warn('AI Tagging failed', e);
+        return [];
+    }
+}
+
 function makeCard(item,isCanvas){const el=document.createElement('div');el.className=isCanvas?'c-card':'card';el.dataset.id=item.id;const isYT=item.type==='video'&&!!ytId(item.url||'');const isDirectVideo=item.type==='video'&&!isYT&&(/\.(mp4|webm|mov)$/i.test(item.url)||(item.thumbnail&&item.thumbnail.startsWith('data:video')));const tags=(item.tags||[]).slice(0,3).map(t=>`<span class="card-tag">${esc(t)}</span>`).join('');const favCls=item.favorite?' on':'';const favIco=item.favorite?'<i class="fas fa-heart"></i>':'<i class="far fa-heart"></i>';const hasThumb=item.thumbnail&&typeof item.thumbnail==='string'&&item.thumbnail.length>10;let mediaHtml='';if(isDirectVideo){const vidSrc=hasThumb?item.thumbnail:(item.url&&!item.url.startsWith('local://')?item.url:'');if(vidSrc){mediaHtml=`<div class="card-img-wrap"><video class="card-img card-video" src="${esc(vidSrc)}" muted loop playsinline draggable="false"></video></div>`}else{mediaHtml=`<div class="card-img-wrap"><div class="card-fallback"><span class="card-fallback-ico">${getFallbackIcon(item.domain,item.type)}</span><span class="card-fallback-txt">${esc(item.domain||item.type)}</span></div></div>`}}else if(hasThumb){mediaHtml=`<div class="card-img-wrap"><img class="card-img" src="${esc(item.thumbnail)}" alt="" loading="lazy" onerror="this.style.display='none';this.parentElement.querySelector('.card-fallback').style.display='flex';"><div class="card-fallback" style="display:none;"><span class="card-fallback-ico">${getFallbackIcon(item.domain,item.type)}</span><span class="card-fallback-txt">${esc(item.domain||item.type)}</span></div></div>`}else{mediaHtml=`<div class="card-img-wrap"><div class="card-fallback"><span class="card-fallback-ico">${getFallbackIcon(item.domain,item.type)}</span><span class="card-fallback-txt">${esc(item.fileName||item.domain||item.type)}</span></div></div>`}el.innerHTML=`${mediaHtml}${isYT?`<div class="card-video-badge"><div class="card-video-ico"><i class="fas fa-play"></i></div></div>`:''}<div class="card-body"><div class="card-top"><div class="card-title">${esc(item.title||item.domain||'Untitled')}</div><button class="card-fav${favCls}" data-id="${item.id}" data-fav="1">${favIco}</button></div><div class="card-meta"><span class="card-badge">${esc(item.type)}</span><span class="card-domain">${esc(item.domain||'')}</span></div>${tags?`<div class="card-tags">${tags}</div>`:''}</div>`;return el}
 function updateCounts(){const a=S.items;$('cnt-all').textContent=a.length;$('cnt-image').textContent=a.filter(x=>x.type==='image').length;$('cnt-video').textContent=a.filter(x=>x.type==='video').length;$('cnt-pdf').textContent=a.filter(x=>x.type==='pdf').length;$('cnt-link').textContent=a.filter(x=>x.type==='link'||x.type==='html').length;$('cnt-fav').textContent=a.filter(x=>x.favorite).length}
 function renderGrid(){const container=$('grid-view');const items=filtered();$('item-count').textContent=`${items.length} item${items.length!==1?'s':''}`;updateCounts();if(items.length===0){container.innerHTML='';if(S.items.length===0){$('empty-state').classList.add('show')}else{$('empty-state').classList.remove('show');container.innerHTML=`<div style="padding:52px;text-align:center;color:var(--text-secondary);font-size:15px;font-weight:500;">No items match current filters</div>`}return}$('empty-state').classList.remove('show');container.innerHTML='';items.forEach(item=>container.appendChild(makeCard(item,false)))}
@@ -906,12 +950,39 @@ const Canvas={panning:false,px:0,py:0,dragging:false,dragEl:null,dox:0,doy:0,mov
 
 const Detail={async open(id){const item=getItem(id);if(!item)return;S.detail.id=id;updateItem(id,{openCount:(item.openCount||0)+1});$('dp-id').textContent=`id: ${id}`;const tw=$('dp-thumb-wrap');const isYT=item.type==='video'&&!!ytId(item.url||'');const isDirectVideo=item.type==='video'&&!isYT&&(/\.(mp4|webm|mov)$/i.test(item.url)||(item.thumbnail&&item.thumbnail.startsWith('data:video')));const hasThumb=item.thumbnail&&typeof item.thumbnail==='string'&&item.thumbnail.length>10;let fileBlob=null;if(item.isLocalFile&&S.db){fileBlob=await IDB.get(id)}if(isDirectVideo){const vidSrc=fileBlob?URL.createObjectURL(fileBlob):(hasThumb?item.thumbnail:(item.url&&!item.url.startsWith('local://')?item.url:''));if(vidSrc){tw.innerHTML=`<video class="dp-thumb" src="${esc(vidSrc)}" controls muted loop playsinline></video>`}else{tw.innerHTML=`<div class="dp-thumb-fallback">${getFallbackIcon(item.domain,item.type)}</div>`}}else if(fileBlob){const objUrl=URL.createObjectURL(fileBlob);if(item.type==='pdf'){tw.innerHTML=`<iframe src="${objUrl}" style="width:100%;height:200px;border:none;background:#fff;"></iframe>`}else{tw.innerHTML=`<img class="dp-thumb" src="${objUrl}" alt="">`}}else if(hasThumb){tw.innerHTML=`<img class="dp-thumb" src="${esc(item.thumbnail)}" alt="">`}else{tw.innerHTML=`<div class="dp-thumb-fallback">${getFallbackIcon(item.domain,item.type)}</div>`}
 
-// Editable Title
 $('dp-title').value = item.title || '';
 
 const urlEl=$('dp-url');urlEl.textContent=item.url||'';urlEl.onclick=()=>item.url&&window.open(item.url,'_blank');const descSec=$('dp-desc-sec');if(item.description){$('dp-desc').textContent=item.description;descSec.style.display=''}else{descSec.style.display='none'}$('dp-notes').value=item.notes||'';this.renderTags(item.tags||[]);this.renderColChips(item.collections||[]);$('dp-meta').innerHTML=`<div class="dp-meta-item"><span class="dp-meta-key">Type</span><span class="dp-meta-val">${esc(item.type)}</span></div><div class="dp-meta-item"><span class="dp-meta-key">Domain</span><span class="dp-meta-val">${esc(item.domain||'—')}</span></div><div class="dp-meta-item"><span class="dp-meta-key">Saved</span><span class="dp-meta-val">${reltime(item.createdAt)}</span></div><div class="dp-meta-item"><span class="dp-meta-key">Opens</span><span class="dp-meta-val">${item.openCount||0}</span></div><div class="dp-meta-item"><span class="dp-meta-key">Updated</span><span class="dp-meta-val">${reltime(item.updatedAt)}</span></div><div class="dp-meta-item"><span class="dp-meta-key">Favorite</span><span class="dp-meta-val">${item.favorite?'Yes':'No'}</span></div>`;$('dp-fav').textContent=item.favorite?'Unfavorite':'Favorite';$('detail-panel').classList.add('open')},close(){$('detail-panel').classList.remove('open');S.detail.id=null;const thumb=$('dp-thumb-wrap').querySelector('img, video, iframe');if(thumb&&thumb.src&&thumb.src.startsWith('blob:')){URL.revokeObjectURL(thumb.src)}},renderTags(tags){const box=$('dp-tags-box');box.querySelectorAll('.t-pill').forEach(e=>e.remove());const inp=$('dp-tag-input');tags.forEach(tag=>{const p=document.createElement('div');p.className='t-pill';p.innerHTML=`<span>${esc(tag)}</span><button class="t-pill-x" data-rtag="${esc(tag)}"><i class="fas fa-xmark"></i></button>`;box.insertBefore(p,inp)})},renderColChips(active){const el=$('dp-cols');el.innerHTML='';S.collections.forEach(col=>{const chip=document.createElement('span');chip.className=`col-chip${active.includes(col)?' on':''}`;chip.textContent=col;chip.dataset.chip=col;el.appendChild(chip)})},getTags(){return[...$('dp-tags-box').querySelectorAll('.t-pill span')].map(e=>e.textContent.trim())},getCols(){return[...$('dp-cols').querySelectorAll('.col-chip.on')].map(e=>e.dataset.chip)},save(){if(!S.detail.id)return;updateItem(S.detail.id,{notes:$('dp-notes').value,tags:this.getTags(),collections:this.getCols()});toast('Saved');renderAll()}};
 async function compressImage(file,maxKB=200){return new Promise((resolve)=>{const reader=new FileReader();reader.onload=(e)=>{const img=new Image();img.onload=()=>{const canvas=document.createElement('canvas');let ctx=canvas.getContext('2d');let width=img.width;let height=img.height;let quality=0.9;const step=()=>{canvas.width=width;canvas.height=height;ctx.drawImage(img,0,0,width,height);const dataUrl=canvas.toDataURL('image/jpeg',quality);const sizeKB=(dataUrl.length*0.75)/1024;if(sizeKB>maxKB){if(quality>0.2){quality-=0.1}else if(width>300){width*=0.85;height*=0.85;quality=0.8}else{resolve(dataUrl);return}step()}else{resolve(dataUrl)}};step()};img.src=e.target.result};reader.readAsDataURL(file)})}
-async function ingest(rawUrl){let url=rawUrl.trim();if(!url)return;if(!/^https?:\/\//i.test(url))url='https://'+url;try{new URL(url)}catch{toast('Invalid URL');return}$('capture-spinner').classList.add('show');$('capture-input').disabled=true;try{const meta=await fetchMeta(url);const item={id:uid(),type:meta.type,url,title:meta.title||meta.domain,description:meta.description||'',thumbnail:meta.thumbnail||null,domain:meta.domain,tags:[],collections:[],notes:'',createdAt:Date.now(),updatedAt:Date.now(),openCount:0,favorite:false,isLocalFile:false};await saveItemToFirestore(item);renderAll();$('capture-input').value='';toast(`Saved — ${(item.title||'').slice(0,42)}`)}catch{toast('Failed to save item')}finally{$('capture-spinner').classList.remove('show');$('capture-input').disabled=false;$('capture-input').focus()}}
+
+async function ingest(rawUrl){
+    let url=rawUrl.trim();if(!url)return;if(!/^https?:\/\//i.test(url))url='https://'+url;try{new URL(url)}catch{toast('Invalid URL');return}
+    $('capture-spinner').classList.add('show');$('capture-input').disabled=true;
+    try{
+        const meta=await fetchMeta(url);
+        
+        // AI Auto-Tagging Integration
+        let autoTags = [];
+        const groqKey = localStorage.getItem('vias_groq_key');
+        if(groqKey && (meta.title || meta.description)){
+            toast('Generating AI tags...');
+            autoTags = await generateAITags(meta.title, meta.description, groqKey);
+        }
+
+        const item={
+            id:uid(),type:meta.type,url,
+            title:meta.title||meta.domain,
+            description:meta.description||'',
+            thumbnail:meta.thumbnail||null,
+            domain:meta.domain,
+            tags: autoTags, // Inject AI tags here
+            collections:[],notes:'',
+            createdAt:Date.now(),updatedAt:Date.now(),openCount:0,favorite:false,isLocalFile:false
+        };
+        await saveItemToFirestore(item);renderAll();$('capture-input').value='';toast(`Saved — ${(item.title||'').slice(0,42)}`)
+    }catch(e){console.error(e);toast('Failed to save item')}finally{$('capture-spinner').classList.remove('show');$('capture-input').disabled=false;$('capture-input').focus()}
+}
+
 async function uploadFile(file){const id=uid();const ext=file.name.split('.').pop().toLowerCase();let type='document';if(file.type.startsWith('image/'))type='image';else if(file.type.startsWith('video/')||['mp4','webm','mov'].includes(ext))type='video';else if(ext==='pdf')type='pdf';else if(['html','htm'].includes(ext))type='html';let finalUrl=`local://${id}`;let thumbUrl=null;if(type==='image'){try{toast('Compressing image...');const compressedBase64=await compressImage(file,200);thumbUrl=compressedBase64;finalUrl=compressedBase64}catch(e){console.error(e);toast('Compression failed, saving locally');if(S.db)await IDB.put(id,file);thumbUrl=URL.createObjectURL(file)}}else{if(S.db)await IDB.put(id,file);thumbUrl=URL.createObjectURL(file)}const item={id,type,url:finalUrl,title:file.name.replace(/\.[^.]+$/,''),description:`${file.type} · ${fmtBytes(file.size)}`,thumbnail:thumbUrl,domain:'local upload',tags:[],collections:[],notes:'',createdAt:Date.now(),updatedAt:Date.now(),openCount:0,favorite:false,isLocalFile:(type!=='image'),fileName:file.name,fileSize:file.size};await saveItemToFirestore(item);return item}
 function renderDash(){const items=S.items;const total=items.length;const favs=items.filter(x=>x.favorite).length;const types={};items.forEach(x=>{types[x.type]=(types[x.type]||0)+1});const topOpened=items.reduce((b,x)=>(!b||(x.openCount||0)>(b.openCount||0))?x:b,null);const domCounts={};items.forEach(x=>{if(x.domain)domCounts[x.domain]=(domCounts[x.domain]||0)+1});const topDom=Object.entries(domCounts).sort((a,b)=>b[1]-a[1])[0];const recent=[...items].sort((a,b)=>b.createdAt-a.createdAt).slice(0,6);const distSegs=Object.entries(types).filter(([,v])=>v>0).map(([t,n])=>{const pct=total?(n/total*100).toFixed(1):0;return`<div class="dist-seg" style="width:${pct}%;background:${TYPE_COLORS[t]||'#333'}"></div>`}).join('');const distLeg=Object.entries(types).filter(([,v])=>v>0).map(([t,n])=>`<div class="dist-li"><div class="dist-dot" style="background:${TYPE_COLORS[t]||'#333'}"></div><span>${t} (${n})</span></div>`).join('');const colStats=S.collections.map(col=>({col,cnt:items.filter(x=>(x.collections||[]).includes(col)).length})).filter(x=>x.cnt>0).sort((a,b)=>b.cnt-a.cnt);const colBars=colStats.map(({col,cnt})=>{const pct=total?Math.round(cnt/total*100):0;return`<div class="col-bar"><div class="col-bar-hd"><span class="col-bar-name">${esc(col)}</span><span class="col-bar-cnt">${cnt}</span></div><div class="col-bar-track"><div class="col-bar-fill" style="width:${pct}%"></div></div></div>`}).join('');const recentHtml=recent.map(x=>`<div class="recent-item"><span class="recent-ico">◈</span><span class="recent-title">${esc(x.title||x.domain)}</span><span class="recent-time">${reltime(x.createdAt)}</span></div>`).join('');$('dash-body').innerHTML=`<div class="dash-grid"><div class="stat-card"><div class="stat-val">${total}</div><div class="stat-lbl">Total Items</div></div><div class="stat-card"><div class="stat-val">${favs}</div><div class="stat-lbl">Favorites</div></div><div class="stat-card"><div class="stat-val">${S.collections.length}</div><div class="stat-lbl">Collections</div></div><div class="stat-card"><div class="stat-val">${topOpened?topOpened.openCount||0:0}</div><div class="stat-lbl">Max Opens</div><div class="stat-sub">${topOpened?esc((topOpened.title||'').slice(0,22)):'—'}</div></div></div>${topDom?`<div style="margin-bottom:14px;padding:10px 12px;background:var(--bg);border:1px solid var(--border-1);display:flex;align-items:center;gap:10px;"><img src="${favicon(topDom[0])}" style="width:14px;height:14px;" onerror="this.style.display='none'"><span style="font-size:11px;color:var(--text-secondary);">${esc(topDom[0])}</span><span style="font-size:9px;color:var(--text-faint);margin-left:auto;">${topDom[1]} items · top domain</span></div>`:''}<span class="dash-sec-lbl">Type Distribution</span><div class="dist-bar">${distSegs||`<div style="width:100%;height:100%;background:var(--border-1)"></div>`}</div><div class="dist-legend">${distLeg}</div>${colBars?`<span class="dash-sec-lbl">Collections</span><div style="margin-bottom:14px;">${colBars}</div>`:''}${recent.length?`<span class="dash-sec-lbl">Recent Saves</span><div>${recentHtml}</div>`:''}`}
 function exportJSON(){const data={_atlas_version:1,exportedAt:new Date().toISOString(),items:S.items,collections:S.collections,canvasPositions:S.canvas.positions};dlFile(JSON.stringify(data,null,2),'vias-os-backup.json','application/json');toast('JSON exported')}
@@ -947,9 +1018,23 @@ function wire(){
     $('btn-dash-m').addEventListener('click',()=>{$('btn-dash').click();closeSidebarIfMobile()});
     $('btn-ie').addEventListener('click',()=>openModal('ie-modal'));
     $('btn-ie-m').addEventListener('click',()=>{$('btn-ie').click();closeSidebarIfMobile()});
-    $('btn-settings').addEventListener('click',()=>{$('st-items').textContent=S.items.length;$('st-cols').textContent=S.collections.length;openModal('settings-modal')});
+    
+    $('btn-settings').addEventListener('click',()=>{
+        $('st-items').textContent=S.items.length;
+        $('st-cols').textContent=S.collections.length;
+        const savedKey = localStorage.getItem('vias_groq_key');
+        if(savedKey) $('groq-key-input').value = savedKey;
+        openModal('settings-modal');
+    });
     $('btn-settings-m').addEventListener('click',()=>{$('btn-settings').click();closeSidebarIfMobile()});
     
+    // Groq Key Saver
+    $('save-groq-btn').addEventListener('click', () => {
+        const key = $('groq-key-input').value.trim();
+        localStorage.setItem('vias_groq_key', key);
+        toast('AI Key Saved');
+    });
+
     $$('[data-modal]').forEach(btn=>btn.addEventListener('click',()=>closeModal(btn.dataset.modal)));$$('.modal-bg').forEach(bg=>bg.addEventListener('click',e=>{if(e.target===bg)bg.classList.remove('open')}));
     $('do-export-json').addEventListener('click',exportJSON);$('do-export-csv').addEventListener('click',exportCSV);
     $('do-import').addEventListener('click',()=>$('import-file').click());
@@ -1009,7 +1094,6 @@ function wire(){
         if (S.detail.id) Lightbox.open(S.detail.id);
     });
 
-    // Editable Title Logic
     $('dp-title').addEventListener('blur', () => {
         if (S.detail.id) {
             const newTitle = $('dp-title').value.trim();
