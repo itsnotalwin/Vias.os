@@ -36,7 +36,7 @@
 ::selection{background:rgba(10,132,255,0.3)}
 html,body{height:100%;overflow:hidden}
 body{
-    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-family: 'DM Mono', -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
     background: var(--bg);
     color: var(--text-primary);
@@ -523,12 +523,43 @@ body{
 
 .mobile-only { display: none; }
 
-/* MOBILE OPTIMIZATION - CLEAN SIZES */
+/* GRID LAYOUT CLASSES */
+#grid-view.grid-cols-1 { columns: 1 !important; }
+#grid-view.grid-cols-2 { columns: 2 !important; }
+#grid-view.grid-cols-3 { columns: 3 !important; }
+#grid-view.grid-cols-4 { columns: 4 !important; }
+#grid-view.grid-cols-auto { columns: 4 240px; }
+
+/* Grid Layout Buttons */
+.grid-layout-opts {
+    display: flex;
+    gap: 8px;
+    padding: 0 16px;
+    flex-wrap: wrap;
+}
+.grid-opt-btn {
+    flex: 1;
+    min-width: 40px;
+    background: var(--surface-2);
+    border: 1px solid var(--border-1);
+    color: var(--text-secondary);
+    padding: 8px;
+    border-radius: 6px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s var(--ease);
+}
+.grid-opt-btn.active {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+}
+
+/* MOBILE OPTIMIZATION */
 @media(max-width:768px){
     #btn-menu { display: flex; }
     #hd-spacer, #search-input, .view-toggle, .hd-btn { display: none !important; }
     
-    /* Header optimized for mobile */
     #header { 
         padding: 0 12px; 
         gap: 8px; 
@@ -536,10 +567,9 @@ body{
     }
     #logo { 
         font-size: 18px; 
-        display: none; /* Hide logo on mobile to save space */
+        display: none;
     }
     
-    /* Capture area optimized */
     #capture-wrap { 
         max-width: none; 
         flex: 1; 
@@ -562,9 +592,9 @@ body{
         border-radius: 12px;
         font-size: 18px;
         flex-shrink: 0;
+        display: flex !important;
     }
     
-    /* Sidebar mobile optimized */
     #sidebar {
         position: fixed; 
         top: 0; 
@@ -574,12 +604,11 @@ body{
         transform: translateX(-100%); 
         transition: transform 0.4s var(--ease);
         box-shadow: 12px 0 32px rgba(0,0,0,0.5);
-        padding-top: 60px; /* Space for header */
+        padding-top: 60px;
     }
     #sidebar.open { transform: translateX(0); }
     .mobile-only { display: block !important; }
     
-    /* Mobile search in sidebar */
     .mobile-search-wrap {
         padding: 0 16px 16px;
         margin-bottom: 8px;
@@ -606,12 +635,19 @@ body{
         pointer-events: none;
     }
     
-    /* Grid optimized for mobile */
+    /* Mobile Grid Default: 2 Columns (if auto) */
+    #grid-view.grid-cols-auto { columns: 2 160px !important; }
+    /* If user explicitly chose 1, 2, 3, 4 on mobile, respect it */
+    #grid-view.grid-cols-1 { columns: 1 !important; }
+    #grid-view.grid-cols-2 { columns: 2 !important; }
+    #grid-view.grid-cols-3 { columns: 3 !important; }
+    #grid-view.grid-cols-4 { columns: 4 !important; }
+    
     #grid-view { 
-        columns: 2 160px; 
         column-gap: 12px; 
         padding: 12px; 
     }
+    
     .card { 
         margin-bottom: 12px; 
         border-radius: 14px; 
@@ -642,7 +678,6 @@ body{
         padding: 2px 6px;
     }
     
-    /* Detail panel full width on mobile */
     #detail-panel { 
         width: 100%; 
         max-width: 100%; 
@@ -703,7 +738,6 @@ body{
         font-size: 14px;
     }
     
-    /* Canvas controls larger for touch */
     .hud-btn { 
         width: 52px; 
         height: 52px; 
@@ -719,7 +753,6 @@ body{
         font-size: 14px;
     }
     
-    /* Lightbox mobile */
     .lb-header {
         padding: 12px 16px;
     }
@@ -734,13 +767,11 @@ body{
         font-size: 20px;
     }
     
-    /* Toast mobile */
     .toast {
         font-size: 13px;
         padding: 8px 16px;
     }
     
-    /* Context menu mobile */
     #ctx-menu {
         min-width: 200px;
     }
@@ -749,7 +780,6 @@ body{
         font-size: 15px;
     }
     
-    /* Modal mobile */
     .modal {
         width: 95%;
         max-height: 90vh;
@@ -777,7 +807,6 @@ body{
         padding: 0 18px;
     }
     
-    /* Dashboard mobile */
     .dash-grid {
         grid-template-columns: repeat(2, 1fr);
         gap: 10px;
@@ -795,7 +824,6 @@ body{
         font-size: 12px;
     }
     
-    /* Export/Import mobile */
     .ie-grid {
         grid-template-columns: 1fr;
     }
@@ -810,10 +838,8 @@ body{
     }
 }
 
-/* Extra small screens */
 @media(max-width:480px){
     #grid-view { 
-        columns: 1; 
         padding: 8px;
     }
     .card {
@@ -877,6 +903,17 @@ body{
         <button class="hd-btn" id="btn-settings-m" style="width:100%; height:48px; display:flex; align-items:center; justify-content:center; border-radius:12px; background:var(--surface-1); color:var(--text-primary); font-weight:500;">Settings</button>
       </div>
       
+      <div class="sb-section">
+        <div class="sb-section-hd"><span class="sb-label">Grid Layout</span></div>
+        <div class="grid-layout-opts">
+            <button class="grid-opt-btn active" data-cols="auto">Auto</button>
+            <button class="grid-opt-btn" data-cols="1">1</button>
+            <button class="grid-opt-btn" data-cols="2">2</button>
+            <button class="grid-opt-btn" data-cols="3">3</button>
+            <button class="grid-opt-btn" data-cols="4">4</button>
+        </div>
+      </div>
+
       <div class="sb-section">
         <div class="sb-section-hd"><span class="sb-label">Library</span></div>
         <div id="filter-list">
@@ -964,7 +1001,7 @@ body{
   <div class="set-sec">
     <div class="set-sec-title">AI Auto-Tagging (Groq)</div>
     <div class="set-note">Automatically generate tags for new items using AI. Your key is stored locally in your browser and never shared.</div>
-    <div class="form-row"><label class="form-lbl">Groq API Key</label><input class="form-input" id="groq-key-input" type="password" placeholder="gsk_..."></div>
+    <div class="form-row"><label class="form-lbl">Groq API Key</label><input class="form-input" id="groq-key-input" type="password" placeholder="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"></div>
     <div class="form-actions"><button class="btn primary" id="save-groq-btn">Save Key</button></div>
   </div>
 
@@ -1010,7 +1047,7 @@ db.enablePersistence({ synchronizeTabs: true })
         }
     });
 
-const S={items:[],collections:['AI','Research','Design','Inspiration','Work'],view:'grid',filter:{type:'all',collection:null,domain:null,sort:'newest',search:''},canvas:{x:0,y:0,scale:1,positions:{}},detail:{id:null},ctx:{id:null},db:null};
+const S={items:[],collections:['AI','Research','Design','Inspiration','Work'],view:'grid',filter:{type:'all',collection:null,domain:null,sort:'newest',search:''},canvas:{x:0,y:0,scale:1,positions:{}},detail:{id:null},ctx:{id:null},db:null,gridCols:'auto'};
 const $=id=>document.getElementById(id);const $q=s=>document.querySelector(s);const $$=s=>document.querySelectorAll(s);
 function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,8)}
 function esc(s){if(s==null)return'';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;')}
@@ -1021,7 +1058,7 @@ function fmtBytes(b){if(b>1048576)return`${(b/1048576).toFixed(1)} MB`;if(b>1024
 const TYPE_COLORS={link:'#0A84FF',image:'#30D158',video:'#FF453A',pdf:'#FF9F0A',document:'#BF5AF2'};
 function toast(msg,dur=2400){const el=document.createElement('div');el.className='toast';el.textContent=msg;$('toast-wrap').appendChild(el);requestAnimationFrame(()=>el.classList.add('show'));setTimeout(()=>{el.classList.remove('show');setTimeout(()=>el.remove(),320)},dur)}
 const IDB={DB_NAME:'atlas_db',STORE:'files',async init(){return new Promise((resolve,reject)=>{const request=indexedDB.open(this.DB_NAME,1);request.onupgradeneeded=(e)=>{const db=e.target.result;if(!db.objectStoreNames.contains(this.STORE)){db.createObjectStore(this.STORE,{keyPath:'id'})}};request.onsuccess=()=>{S.db=request.result;resolve()};request.onerror=()=>reject(request.error)})},async put(id,blob){return new Promise((resolve,reject)=>{const tx=S.db.transaction(this.STORE,'readwrite');const store=tx.objectStore(this.STORE);store.put({id,blob,ts:Date.now()});tx.oncomplete=()=>resolve();tx.onerror=()=>reject(tx.error)})},async get(id){return new Promise((resolve,reject)=>{const tx=S.db.transaction(this.STORE,'readonly');const store=tx.objectStore(this.STORE);const req=store.get(id);req.onsuccess=()=>resolve(req.result?.blob||null);req.onerror=()=>reject(req.error)})},async delete(id){return new Promise((resolve,reject)=>{const tx=S.db.transaction(this.STORE,'readwrite');tx.objectStore(this.STORE).delete(id);tx.oncomplete=()=>resolve();tx.onerror=()=>reject(tx.error)})}};
-const Store={load(){try{S.items=JSON.parse(localStorage.getItem('atlas_items')||'[]');S.collections=JSON.parse(localStorage.getItem('atlas_cols')||'["AI","Research","Design","Inspiration","Work"]');S.canvas.positions=JSON.parse(localStorage.getItem('atlas_cpos')||'{}')}catch{S.items=[];S.collections=['AI','Research','Design','Inspiration','Work'];S.canvas.positions={}}},persist(){try{localStorage.setItem('atlas_items',JSON.stringify(S.items))}catch(e){if(e.name==='QuotaExceededError')toast('Local cache full')}},saveCols(){localStorage.setItem('atlas_cols',JSON.stringify(S.collections))},saveCPos(){localStorage.setItem('atlas_cpos',JSON.stringify(S.canvas.positions))},size(){let b=0;for(const k of Object.keys(localStorage))if(k.startsWith('atlas_'))b+=(localStorage[k]||'').length*2;return b}};
+const Store={load(){try{S.items=JSON.parse(localStorage.getItem('atlas_items')||'[]');S.collections=JSON.parse(localStorage.getItem('atlas_cols')||'["AI","Research","Design","Inspiration","Work"]');S.canvas.positions=JSON.parse(localStorage.getItem('atlas_cpos')||'{}');S.gridCols=localStorage.getItem('vias_grid_cols')||'auto';}catch{S.items=[];S.collections=['AI','Research','Design','Inspiration','Work'];S.canvas.positions={};S.gridCols='auto';}},persist(){try{localStorage.setItem('atlas_items',JSON.stringify(S.items))}catch(e){if(e.name==='QuotaExceededError')toast('Local cache full')}},saveCols(){localStorage.setItem('atlas_cols',JSON.stringify(S.collections))},saveCPos(){localStorage.setItem('atlas_cpos',JSON.stringify(S.canvas.positions))},size(){let b=0;for(const k of Object.keys(localStorage))if(k.startsWith('atlas_'))b+=(localStorage[k]||'').length*2;return b}};
 
 let unsubItems=null,unsubConfig=null;
 async function loadGlobalData(){
@@ -1273,7 +1310,7 @@ async function ingest(rawUrl){
         
         // AI Auto-Tagging Integration
         let autoTags = [];
-        const groqKey = localStorage.getItem('vias_groq_key') || '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';
+        const groqKey = localStorage.getItem('vias_groq_key') || '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';
         if(groqKey && (meta.title || meta.description)){
             try {
                 autoTags = await generateAITags(meta.title, meta.description, groqKey);
@@ -1342,7 +1379,7 @@ function wire(){
     $('btn-settings').addEventListener('click',()=>{
         $('st-items').textContent=S.items.length;
         $('st-cols').textContent=S.collections.length;
-        const savedKey = localStorage.getItem('vias_groq_key') || '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';
+        const savedKey = localStorage.getItem('vias_groq_key') || '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';
         if(savedKey) $('groq-key-input').value = savedKey;
         openModal('settings-modal');
     });
@@ -1383,6 +1420,16 @@ function wire(){
     
     $('toolbar').addEventListener('click',e=>{const btn=e.target.closest('[data-tf]');if(!btn)return;$$('#toolbar .tb-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');S.filter.type=btn.dataset.tf;$$('#filter-list .sb-item').forEach(el=>el.classList.remove('active'));const sbm=$q(`#filter-list [data-ft="${btn.dataset.tf}"]`);if(sbm)sbm.classList.add('active');renderAll()});
     
+    // Grid Layout Controls
+    document.querySelectorAll('.grid-opt-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const cols = btn.dataset.cols;
+            S.gridCols = cols;
+            localStorage.setItem('vias_grid_cols', cols);
+            applyGridCols(cols);
+        });
+    });
+
     $('grid-view').addEventListener('click',e=>{
         const favBtn=e.target.closest('[data-fav]');
         if(favBtn){e.stopPropagation();const id=favBtn.dataset.id;const item=getItem(id);if(!item)return;const newFav=!item.favorite;updateItem(id,{favorite:newFav});favBtn.classList.toggle('on',newFav);favBtn.innerHTML=newFav?'<i class="fas fa-heart"></i>':'<i class="far fa-heart"></i>';updateCounts();renderCols();return}
@@ -1463,6 +1510,21 @@ function wire(){
         if((e.metaKey||e.ctrlKey)&&e.key==='s'&&S.detail.id){e.preventDefault();Detail.save()}
     });
 }
+
+function applyGridCols(cols) {
+    const gv = $('grid-view');
+    gv.classList.remove('grid-cols-1', 'grid-cols-2', 'grid-cols-3', 'grid-cols-4', 'grid-cols-auto');
+    if (cols !== 'auto') {
+        gv.classList.add('grid-cols-' + cols);
+    } else {
+        gv.classList.add('grid-cols-auto');
+    }
+    // Update UI
+    document.querySelectorAll('.grid-opt-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.cols === cols);
+    });
+}
+
 async function init(){
     const bar=$('ls-bar');bar.style.width='35%';
     try{await IDB.init()}catch(e){console.warn('IndexedDB not available')}
@@ -1479,6 +1541,9 @@ async function init(){
         renderAll();
         toast('Offline mode - local data only');
     }
+    
+    // Apply saved grid cols
+    applyGridCols(S.gridCols);
     
     bar.style.width='100%';
     setTimeout(()=>{$('loading-screen').classList.add('fade');setTimeout(()=>$('loading-screen').remove(),400)},550)
