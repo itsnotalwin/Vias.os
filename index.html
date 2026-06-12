@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj48cmVjdCB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgcng9IjExMiIgZmlsbD0iIzA1MDUwNSIvPjxjaXJjbGUgY3g9IjI1NiIgY3k9IjI1NiIgcj0iMTYwIiBmaWxsPSJub25lIiBzdHJva2U9IiMxYTFhMWEiIHN0cm9rZS13aWR0aD0iMiIvPjxjaXJjbGUgY3g9IjI1NiIgY3k9IjI1NiIgcj0iMTYwIiBmaWxsPSJub25lIiBzdHJva2U9IiMwQTg0RkYiIHN0cm9rZS13aWR0aD0iNCIgc3Ryb2tlLWRhc2hhcnJheT0iODAgMjAwIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHRyYW5zZm9ybT0icm90YXRlKC00NSAyNTYgMjU2KSIvPjxwYXRoIGQ9Ik0yNTYgMTMwIEwzMzAgMzUwIEwyNTYgMzEwIEwxODIgMzUwIFoiIGZpbGw9IiNlMGUwZTAiLz48cGF0aCBkPSJNMjU2IDEzMCBMMjU2IDMxMCBMMTgyIDM1MCBaIiBmaWxsPSIjODg4ODg4Ii8+PGNpcmNsZSBjeD0iMjU2IiBjeT0iMjc1IiByPSIxNCIgZmlsbD0iIzA1MDUwNSIgc3Ryb2tlPSIjMEE4NEZGIiBzdHJva2Utd2lkdGg9IjQiLz48Y2lyY2xlIGN4PSIyNTYiIGN5PSIyNzUiIHI9IjQiIGZpbGw9IiMwQTg0RkYiLz48L3N2Zz4=">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
@@ -39,14 +39,16 @@
 ::selection{background:rgba(10,132,255,0.3)}
 html,body{height:100%;overflow:hidden}
 body{
-    font-family: 'DM Mono', -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
     background: var(--bg);
     color: var(--text-primary);
     font-size: 14px;
     font-weight: 400;
     letter-spacing: -0.01em;
-    line-height: 1.4;
+    line-height: 1.5;
     -webkit-tap-highlight-color: transparent;
 }
 
@@ -266,7 +268,7 @@ body{
 .dp-hd{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border-1);flex-shrink:0;background:rgba(18,18,18,0.8);backdrop-filter:var(--blur);position:sticky;top:0;z-index:10}
 .dp-hd-meta{display:flex;flex-direction:column;gap:2px}
 .dp-hd-label{font-size:11px;font-weight:600;letter-spacing:0.02em;text-transform:uppercase;color:var(--text-secondary)}
-.dp-hd-id{font-size:11px;color:var(--text-tertiary);font-family:monospace}
+.dp-hd-id{font-size:11px;color:var(--text-tertiary);font-family:'DM Mono', monospace;}
 .dp-close{background:none;border:none;color:var(--accent);cursor:pointer;font-size:16px;font-weight:500;transition:opacity .15s var(--ease);padding:4px;line-height:1}
 .dp-close:hover{opacity:0.7}
 
