@@ -1,9 +1,7 @@
 {
-  "name": "Vias.os",
-  "short_name": "Vias",
-  "start_url": "/Vias.os/index.html",
-  "scope": "/Vias.os/",
-  "id": "vias-os-app",
+  "name": "vias.os",
+  "short_name": "vias.os",
+  "start_url": "/Vias.os/",
   "display": "standalone",
   "background_color": "#050505",
   "theme_color": "#050505",
