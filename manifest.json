@@ -1,7 +1,9 @@
 {
-  "name": "ATLAS",
-  "short_name": "ATLAS",
-  "start_url": "/",
+  "name": "Vias.os",
+  "short_name": "Vias",
+  "start_url": "/Vias.os/index.html",
+  "scope": "/Vias.os/",
+  "id": "vias-os-app",
   "display": "standalone",
   "background_color": "#050505",
   "theme_color": "#050505",
