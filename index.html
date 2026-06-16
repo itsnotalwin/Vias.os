@@ -7,8 +7,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="description" content="ATLAS - A global visual internet archive.">
-<title>Vias.os</title>
+<meta name="description" content="VIAS.OS - A global visual internet archive.">
+<title>VIAS.OS</title>
 <link rel="icon" href="icons/icon-192.png" sizes="192x192">
 <link rel="icon" href="icons/icon-512.png" sizes="512x512">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
@@ -36,6 +36,11 @@
     --danger: #FF453A; 
     --ease: cubic-bezier(0.32, 0.72, 0, 1); 
     --blur: saturate(180%) blur(20px);
+    /* Safe area insets for notched devices */
+    --safe-top: env(safe-area-inset-top, 0px);
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
+    --safe-left: env(safe-area-inset-left, 0px);
+    --safe-right: env(safe-area-inset-right, 0px);
 }
 
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -53,6 +58,11 @@ body{
     letter-spacing: -0.01em;
     line-height: 1.5;
     -webkit-tap-highlight-color: transparent;
+    /* Respect safe areas on notched devices */
+    padding-top: var(--safe-top);
+    padding-bottom: var(--safe-bottom);
+    padding-left: var(--safe-left);
+    padding-right: var(--safe-right);
 }
 
 ::-webkit-scrollbar{width:8px;height:8px}
@@ -64,7 +74,8 @@ body{
 
 #header{
     display:flex;align-items:center;gap:12px;
-    padding:0 16px;height:52px;
+    padding:calc(var(--safe-top) + 12px) 16px calc(var(--safe-bottom) + 12px) 16px;
+    height:auto;min-height:52px;
     background: rgba(18, 18, 18, 0.8);
     backdrop-filter: var(--blur);
     -webkit-backdrop-filter: var(--blur);
@@ -138,6 +149,9 @@ body{
     overflow-y:auto;background: var(--bg);
     display:flex;flex-direction:column;z-index:150;
     padding: 12px 0;
+    /* Respect safe areas on notched devices */
+    padding-top: calc(var(--safe-top) + 12px);
+    padding-bottom: calc(var(--safe-bottom) + 12px);
 }
 .sb-section{margin-bottom:24px}
 .sb-section-hd{display:flex;align-items:center;justify-content:space-between;padding:0 16px 6px}
@@ -253,11 +267,11 @@ body{
 .c-card .card-body{padding:12px 14px 14px; cursor:pointer;}
 .c-card .card-title{font-size:14px;-webkit-line-clamp:1}
 
-#canvas-hud{position:absolute;bottom:24px;right:24px;display:flex;flex-direction:column;gap:8px;z-index:50}
+#canvas-hud{position:absolute;bottom:calc(var(--safe-bottom) + 24px);right:calc(var(--safe-right) + 24px);display:flex;flex-direction:column;gap:8px;z-index:50}
 #canvas-hud.hidden{display:none}
 .hud-btn{width:44px;height:44px;background:var(--surface-1);border:1px solid var(--border-1);color:var(--text-primary);font-family:inherit;font-size:18px;cursor:pointer;transition:all .2s var(--ease);display:flex;align-items:center;justify-content:center;border-radius:14px;box-shadow: 0 4px 12px rgba(0,0,0,0.2)}
 .hud-btn:hover{background:var(--surface-2);transform:scale(1.05)}
-#hud-zoom-label{font-size:12px;font-weight:600;color:var(--text-secondary);text-align:center;letter-spacing:0;padding:4px 0}
+#hud-zoom-label{font-size:12px;font-weight:600;color:var(--text-secondary);text-align:center;letter-spacing:0;padding:2px 0}
 
 #detail-panel{
     position:absolute;right:0;top:0;bottom:0;width:400px;flex-shrink:0;
@@ -266,6 +280,9 @@ body{
     transform:translateX(100%);
     transition:transform .4s var(--ease);
     display:flex;flex-direction:column;overflow-y:auto;
+    /* Respect safe areas on notched devices */
+    padding-top: var(--safe-top);
+    padding-bottom: var(--safe-bottom);
 }
 #detail-panel.open{transform:translateX(0)}
 
@@ -354,6 +371,11 @@ body{
     background: rgba(0,0,0,0.95);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
+    /* Respect safe areas on notched devices */
+    padding-top: var(--safe-top);
+    padding-bottom: var(--safe-bottom);
+    padding-left: var(--safe-left);
+    padding-right: var(--safe-right);
 }
 #lightbox.open {
     display: flex;
@@ -473,7 +495,7 @@ body{
 .stat-card{background:var(--surface-2);border:1px solid var(--border-1);padding:16px;border-radius:16px}
 .stat-val{font-size:28px;font-weight:700;color:var(--text-primary);letter-spacing:-0.03em;margin-bottom:4px}
 .stat-lbl{font-size:11px;font-weight:600;letter-spacing:0.02em;text-transform:uppercase;color:var(--text-secondary)}
-.stat-sub{font-size:13px;color:var(--text-secondary);margin-top:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.stat-sub{font-size:13px;color:var(--text-secondary);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 
 .dash-sec-lbl{font-size:11px;font-weight:600;letter-spacing:0.02em;text-transform:uppercase;color:var(--text-secondary);margin-bottom:10px;display:block}
 .dist-bar{display:flex;height:6px;gap:2px;overflow:hidden;margin-bottom:10px;border-radius:3px}
@@ -513,7 +535,7 @@ body{
 .ctx-sep{border-top:1px solid var(--border-1);margin:2px 0}
 .ctx-ico{width:16px;text-align:center;font-size:14px;color:var(--text-secondary)}
 
-#toast-wrap{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:1000;display:flex;flex-direction:column;gap:8px;align-items:center;pointer-events:none}
+#toast-wrap{position:fixed;bottom:calc(var(--safe-bottom) + 24px);left:50%;transform:translateX(-50%);z-index:1000;display:flex;flex-direction:column;gap:8px;align-items:center;pointer-events:none}
 .toast{background:var(--surface-2);border:1px solid var(--border-2);color:var(--text-primary);font-family:inherit;font-size:14px;font-weight:500;padding:10px 20px;opacity:0;transform:translateY(10px);transition:all .3s var(--ease);white-space:nowrap;border-radius:980px;box-shadow:0 8px 24px rgba(0,0,0,0.3);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur)}
 .toast.show{opacity:1;transform:translateY(0)}
 
@@ -570,9 +592,10 @@ body{
     #hd-spacer, #search-input, .view-toggle, .hd-btn { display: none !important; }
     
     #header { 
-        padding: 0 12px; 
+        padding: calc(var(--safe-top) + 12px) 12px calc(var(--safe-bottom) + 12px) 12px; 
         gap: 8px; 
-        height: 56px;
+        height: auto;
+        min-height: 56px;
     }
     #logo { 
         font-size: 18px; 
@@ -613,7 +636,8 @@ body{
         transform: translateX(-100%); 
         transition: transform 0.4s var(--ease);
         box-shadow: 12px 0 32px rgba(0,0,0,0.5);
-        padding-top: 60px;
+        padding-top: calc(var(--safe-top) + 60px);
+        padding-bottom: calc(var(--safe-bottom) + 12px);
     }
     #sidebar.open { transform: translateX(0); }
     .mobile-only { display: block !important; }
@@ -691,6 +715,8 @@ body{
         width: 100%; 
         max-width: 100%; 
         box-shadow: none; 
+        padding-top: var(--safe-top);
+        padding-bottom: var(--safe-bottom);
     }
     .dp-hd { 
         padding: 14px 16px; 
@@ -754,8 +780,8 @@ body{
         border-radius: 16px; 
     }
     #canvas-hud { 
-        bottom: 24px; 
-        right: 24px; 
+        bottom: calc(var(--safe-bottom) + 24px); 
+        right: calc(var(--safe-right) + 24px); 
         gap: 12px; 
     }
     #hud-zoom-label {
@@ -855,7 +881,7 @@ body{
         margin-bottom: 10px;
     }
     #header {
-        padding: 0 10px;
+        padding: calc(var(--safe-top) + 10px) 10px calc(var(--safe-bottom) + 10px) 10px;
         gap: 6px;
     }
     #capture-input {
@@ -872,13 +898,13 @@ body{
 </style>
 </head>
 <body>
-<div id="loading-screen"><div class="ls-logo">ATLAS</div><div class="ls-bar"><div class="ls-bar-fill" id="ls-bar"></div></div></div>
+<div id="loading-screen"><div class="ls-logo">VIAS.OS</div><div class="ls-bar"><div class="ls-bar-fill" id="ls-bar"></div></div></div>
 <div id="drop-overlay"><div class="drop-msg">Drop to save<br><span style="font-size:15px;font-weight:400;color:var(--text-secondary)">Images · PDFs · Documents</span></div></div>
 <div id="sidebar-backdrop"></div>
 <div id="app">
   <header id="header">
     <button id="btn-menu"><i class="fas fa-bars"></i></button>
-    <div id="logo">ATLAS</div>
+    <div id="logo">VIAS.OS</div>
     <div id="capture-wrap">
       <i class="fas fa-link capture-icon"></i>
       <input id="capture-input" type="text" placeholder="Paste URL to save..." autocomplete="off" spellcheck="false">
@@ -962,7 +988,7 @@ body{
         <div id="tb-spacer"></div><span id="item-count">0 items</span>
       </div>
       <div id="content">
-        <div id="empty-state"><div class="es-icon"><i class="fas fa-box-archive"></i></div><div class="es-title">ATLAS is empty</div><div class="es-sub">Paste a URL above to save your first item.<br>Drag & drop files anywhere to upload.</div></div>
+        <div id="empty-state"><div class="es-icon"><i class="fas fa-box-archive"></i></div><div class="es-title">VIAS.OS is empty</div><div class="es-sub">Paste a URL above to save your first item.<br>Drag & drop files anywhere to upload.</div></div>
         <div id="grid-view"></div>
         <div id="canvas-view" class="hidden"><div id="canvas-world"></div></div>
         <div id="canvas-hud" class="hidden"><button class="hud-btn" id="hud-in">+</button><div id="hud-zoom-label">100%</div><button class="hud-btn" id="hud-out">−</button><button class="hud-btn" id="hud-reset" style="font-size:16px;">↺</button></div>
@@ -1001,7 +1027,7 @@ body{
 <div id="ctx-menu"><div class="ctx-item" id="ctx-open"><span class="ctx-ico"><i class="fas fa-arrow-up-right-from-square"></i></span>Open URL</div><div class="ctx-item" id="ctx-fav"><span class="ctx-ico"><i class="fas fa-heart"></i></span>Favorite</div><div class="ctx-item" id="ctx-copy"><span class="ctx-ico"><i class="fas fa-copy"></i></span>Copy URL</div><div class="ctx-item" id="ctx-detail"><span class="ctx-ico"><i class="fas fa-circle-info"></i></span>Details</div><div class="ctx-sep"></div><div class="ctx-item danger" id="ctx-delete"><span class="ctx-ico"><i class="fas fa-trash"></i></span>Delete</div></div>
 <div id="toast-wrap"></div>
 <div class="modal-bg" id="dash-modal"><div class="modal wide"><div class="modal-hd"><span class="modal-title">Dashboard</span><button class="modal-x" data-modal="dash-modal">Done</button></div><div class="modal-body" id="dash-body"></div></div></div>
-<div class="modal-bg" id="ie-modal"><div class="modal"><div class="modal-hd"><span class="modal-title">Import / Export</span><button class="modal-x" data-modal="ie-modal">Done</button></div><div class="modal-body"><div class="ie-grid"><div class="ie-card"><div class="ie-card-title">Export JSON</div><div class="ie-card-desc">Complete backup — all items, collections, and canvas positions.</div><button class="btn" id="do-export-json">Export JSON</button></div><div class="ie-card"><div class="ie-card-title">Export CSV</div><div class="ie-card-desc">Simplified export — title, URL, type, tags, domain, opens.</div><button class="btn" id="do-export-csv">Export CSV</button></div><div class="ie-card"><div class="ie-card-title">Import JSON</div><div class="ie-card-desc">Restore from a previous ATLAS JSON backup. Merges with existing archive.</div><button class="btn" id="do-import">Choose File</button><input type="file" id="import-file" accept=".json" style="display:none"></div><div class="ie-card"><div class="ie-card-title">Clear Archive</div><div class="ie-card-desc">Permanently delete all items and collections. This cannot be undone.</div><button class="btn danger" id="do-clear">Clear All Data</button></div></div></div></div></div>
+<div class="modal-bg" id="ie-modal"><div class="modal"><div class="modal-hd"><span class="modal-title">Import / Export</span><button class="modal-x" data-modal="ie-modal">Done</button></div><div class="modal-body"><div class="ie-grid"><div class="ie-card"><div class="ie-card-title">Export JSON</div><div class="ie-card-desc">Complete backup — all items, collections, and canvas positions.</div><button class="btn" id="do-export-json">Export JSON</button></div><div class="ie-card"><div class="ie-card-title">Export CSV</div><div class="ie-card-desc">Simplified export — title, URL, type, tags, domain, opens.</div><button class="btn" id="do-export-csv">Export CSV</button></div><div class="ie-card"><div class="ie-card-title">Import JSON</div><div class="ie-card-desc">Restore from a previous VIAS.OS JSON backup. Merges with existing archive.</div><button class="btn" id="do-import">Choose File</button><input type="file" id="import-file" accept=".json" style="display:none"></div><div class="ie-card"><div class="ie-card-title">Clear Archive</div><div class="ie-card-desc">Permanently delete all items and collections. This cannot be undone.</div><button class="btn danger" id="do-clear">Clear All Data</button></div></div></div></div></div>
 <div class="modal-bg" id="settings-modal"><div class="modal"><div class="modal-hd"><span class="modal-title">Settings</span><button class="modal-x" data-modal="settings-modal">Done</button></div><div class="modal-body">
   
   <div class="set-sec">
@@ -1012,7 +1038,7 @@ body{
   </div>
 
   <div class="set-sec"><div class="set-sec-title">Global Cloud Sync</div><div class="set-row"><span class="set-key">Connection</span><span class="set-val" id="st-mode">Shared Firestore</span></div><div class="set-row"><span class="set-key">Items Synced</span><span class="set-val" id="st-items">0</span></div><div class="set-row"><span class="set-key">Collections</span><span class="set-val" id="st-cols">0</span></div><div class="set-note" style="margin-top:12px">All users share the same global archive. Changes sync instantly across all devices.</div></div>
-  <div class="set-sec"><div class="set-sec-title">Keyboard Shortcuts</div><div class="set-row"><span class="set-key">⌘K</span><span class="set-val">Focus search</span></div><div class="set-row"><span class="set-key">⌘S</span><span class="set-val">Save detail panel</span></div><div class="set-row"><span class="set-key">Esc</span><span class="set-val">Close panel / modal</span></div><div class="set-row"><span class="set-key">Paste</span><span class="set-val">Auto-ingest URL</span></div><div class="set-row"><span class="set-key">Drop</span><span class="set-val">Upload files</span></div><div class="set-row"><span class="set-key">Right-click</span><span class="set-val">Context menu on card</span></div></div>
+  <div class="set-sec"><div class="set-sec-title">Keyboard Shortcuts</div><div class="set-row"><span class="set-key">⌘K</span><span class="set-val">Focus search</span></div><div class="set-row"><span class="set-key">S</span><span class="set-val">Save detail panel</span></div><div class="set-row"><span class="set-key">Esc</span><span class="set-val">Close panel / modal</span></div><div class="set-row"><span class="set-key">Paste</span><span class="set-val">Auto-ingest URL</span></div><div class="set-row"><span class="set-key">Drop</span><span class="set-val">Upload files</span></div><div class="set-row"><span class="set-key">Right-click</span><span class="set-val">Context menu on card</span></div></div>
 </div></div></div>
 <script>
 (function(){'use strict';
@@ -1021,7 +1047,7 @@ body{
 firebase.firestore.setLogLevel('error');
 
 // PWA Manifest
-const manifest={name:"ATLAS",short_name:"ATLAS",start_url:"/",display:"standalone",background_color:"#050505",theme_color:"#050505",icons:[{src:"icons/icon-192.png",sizes:"192x192",type:"image/png"},{src:"icons/icon-512.png",sizes:"512x512",type:"image/png"},{src:"icons/icon-maskable.png",sizes:"512x512",type:"image/png",purpose:"maskable"}]};
+const manifest={name:"VIAS.OS",short_name:"VIAS.OS",start_url:"/",display:"standalone",background_color:"#050505",theme_color:"#050505",icons:[{src:"icons/icon-192.png",sizes:"192x192",type:"image/png"},{src:"icons/icon-512.png",sizes:"512x512",type:"image/png"},{src:"icons/icon-maskable.png",sizes:"512x512",type:"image/png",purpose:"maskable"}]};
 const mBlob=new Blob([JSON.stringify(manifest)],{type:'application/json'});
 const mLink=document.createElement('link');mLink.rel='manifest';mLink.href=URL.createObjectURL(mBlob);document.head.appendChild(mLink);
 
@@ -1195,8 +1221,8 @@ async function ingest(rawUrl){
 }
 async function uploadFile(file){const id=uid();const ext=file.name.split('.').pop().toLowerCase();let type='document';if(file.type.startsWith('image/'))type='image';else if(file.type.startsWith('video/')||['mp4','webm','mov'].includes(ext))type='video';else if(ext==='pdf')type='pdf';else if(['html','htm'].includes(ext))type='html';let finalUrl=`local://${id}`;let thumbUrl=null;if(type==='image'){try{toast('Compressing image...');const compressedBase64=await compressImage(file,200);thumbUrl=compressedBase64;finalUrl=compressedBase64}catch(e){console.error(e);toast('Compression failed, saving locally');if(S.db)await IDB.put(id,file);thumbUrl=URL.createObjectURL(file)}}else{if(S.db)await IDB.put(id,file);thumbUrl=URL.createObjectURL(file)}const item={id,type,url:finalUrl,title:file.name.replace(/\.[^.]+$/,''),description:`${file.type} · ${fmtBytes(file.size)}`,thumbnail:thumbUrl,domain:'local upload',tags:[],collections:[],notes:'',createdAt:Date.now(),updatedAt:Date.now(),openCount:0,favorite:false,isLocalFile:(type!=='image'),fileName:file.name,fileSize:file.size};await saveItemToFirestore(item);return item}
 function renderDash(){const items=S.items;const total=items.length;const favs=items.filter(x=>x.favorite).length;const types={};items.forEach(x=>{types[x.type]=(types[x.type]||0)+1});const topOpened=items.reduce((b,x)=>(!b||(x.openCount||0)>(b.openCount||0))?x:b,null);const domCounts={};items.forEach(x=>{if(x.domain)domCounts[x.domain]=(domCounts[x.domain]||0)+1});const topDom=Object.entries(domCounts).sort((a,b)=>b[1]-a[1])[0];const recent=[...items].sort((a,b)=>b.createdAt-a.createdAt).slice(0,6);const distSegs=Object.entries(types).filter(([,v])=>v>0).map(([t,n])=>{const pct=total?(n/total*100).toFixed(1):0;return`<div class="dist-seg" style="width:${pct}%;background:${TYPE_COLORS[t]||'#333'}"></div>`}).join('');const distLeg=Object.entries(types).filter(([,v])=>v>0).map(([t,n])=>`<div class="dist-li"><div class="dist-dot" style="background:${TYPE_COLORS[t]||'#333'}"></div><span>${t} (${n})</span></div>`).join('');const colStats=S.collections.map(col=>({col,cnt:items.filter(x=>(x.collections||[]).includes(col)).length})).filter(x=>x.cnt>0).sort((a,b)=>b.cnt-a.cnt);const colBars=colStats.map(({col,cnt})=>{const pct=total?Math.round(cnt/total*100):0;return`<div class="col-bar"><div class="col-bar-hd"><span class="col-bar-name">${esc(col)}</span><span class="col-bar-cnt">${cnt}</span></div><div class="col-bar-track"><div class="col-bar-fill" style="width:${pct}%"></div></div></div>`}).join('');const recentHtml=recent.map(x=>`<div class="recent-item"><span class="recent-ico">◈</span><span class="recent-title">${esc(x.title||x.domain)}</span><span class="recent-time">${reltime(x.createdAt)}</span></div>`).join('');$('dash-body').innerHTML=`<div class="dash-grid"><div class="stat-card"><div class="stat-val">${total}</div><div class="stat-lbl">Total Items</div></div><div class="stat-card"><div class="stat-val">${favs}</div><div class="stat-lbl">Favorites</div></div><div class="stat-card"><div class="stat-val">${S.collections.length}</div><div class="stat-lbl">Collections</div></div><div class="stat-card"><div class="stat-val">${topOpened?topOpened.openCount||0:0}</div><div class="stat-lbl">Max Opens</div><div class="stat-sub">${topOpened?esc((topOpened.title||'').slice(0,22)):'—'}</div></div></div>${topDom?`<div style="margin-bottom:14px;padding:10px 12px;background:var(--bg);border:1px solid var(--border-1);display:flex;align-items:center;gap:10px;"><img src="${favicon(topDom[0])}" style="width:14px;height:14px;" onerror="this.style.display='none'"><span style="font-size:11px;color:var(--text-secondary);">${esc(topDom[0])}</span><span style="font-size:9px;color:var(--text-faint);margin-left:auto;">${topDom[1]} items · top domain</span></div>`:''}<span class="dash-sec-lbl">Type Distribution</span><div class="dist-bar">${distSegs||`<div style="width:100%;height:100%;background:var(--border-1)"></div>`}</div><div class="dist-legend">${distLeg}</div>${colBars?`<span class="dash-sec-lbl">Collections</span><div style="margin-bottom:14px;">${colBars}</div>`:''}${recent.length?`<span class="dash-sec-lbl">Recent Saves</span><div>${recentHtml}</div>`:''}`}
-function exportJSON(){const data={_atlas_version:1,exportedAt:new Date().toISOString(),items:S.items,collections:S.collections,canvasPositions:S.canvas.positions};dlFile(JSON.stringify(data,null,2),'atlas-backup.json','application/json');toast('JSON exported')}
-function exportCSV(){const hdr=['id','title','url','type','domain','tags','collections','notes','favorite','openCount','createdAt'];const rows=S.items.map(x=>[x.id,`"${(x.title||'').replace(/"/g,'""')}"`,`"${(x.url||'').slice(0,500).replace(/"/g,'""')}"`,x.type,x.domain||'',`"${(x.tags||[]).join(', ')}"`,`"${(x.collections||[]).join(', ')}"`,`"${(x.notes||'').replace(/"/g,'""')}"`,x.favorite?'true':'false',x.openCount||0,new Date(x.createdAt).toISOString()].join(','));dlFile([hdr.join(','),...rows].join('\n'),'atlas-export.csv','text/csv');toast('CSV exported')}
+function exportJSON(){const data={_atlas_version:1,exportedAt:new Date().toISOString(),items:S.items,collections:S.collections,canvasPositions:S.canvas.positions};dlFile(JSON.stringify(data,null,2),'vias-os-backup.json','application/json');toast('JSON exported')}
+function exportCSV(){const hdr=['id','title','url','type','domain','tags','collections','notes','favorite','openCount','createdAt'];const rows=S.items.map(x=>[x.id,`"${(x.title||'').replace(/"/g,'""')}"`,`"${(x.url||'').slice(0,500).replace(/"/g,'""')}"`,x.type,x.domain||'',`"${(x.tags||[]).join(', ')}"`,`"${(x.collections||[]).join(', ')}"`,`"${(x.notes||'').replace(/"/g,'""')}"`,x.favorite?'true':'false',x.openCount||0,new Date(x.createdAt).toISOString()].join(','));dlFile([hdr.join(','),...rows].join('\n'),'vias-os-export.csv','text/csv');toast('CSV exported')}
 function importJSON(file){const reader=new FileReader();reader.onload=e=>{try{const data=JSON.parse(e.target.result);if(!Array.isArray(data.items))throw new Error('Bad format');const existing=new Set(S.items.map(x=>x.url));const news=data.items.filter(x=>!existing.has(x.url));if(!confirm(`Import ${news.length} new items? (${data.items.length-news.length} duplicates skipped)`))return;S.items=[...S.items,...news];if(data.collections){const nc=data.collections.filter(c=>!S.collections.includes(c));S.collections=[...S.collections,...nc]}if(data.canvasPositions){S.canvas.positions={...S.canvas.positions,...data.canvasPositions};Store.saveCPos()}Store.persist();Store.saveCols();renderAll();toast(`Imported ${news.length} items`)}catch{toast('Import failed — invalid file')}};reader.readAsText(file)}
 function dlFile(content,name,type){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([content],{type}));a.download=name;document.body.appendChild(a);a.click();document.body.removeChild(a)}
 function openModal(id){$(id).classList.add('open')}
