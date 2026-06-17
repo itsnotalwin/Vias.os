@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<!-- CRITICAL FIX: Updated viewport for iPhone 16 Dynamic Island -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#050505">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -71,6 +72,9 @@ body{
     border-bottom: 1px solid var(--border-1);
     flex-shrink:0;z-index:100;
     transition: transform 0.3s var(--ease);
+    /* NEW: Apply top safe area padding to header */
+    padding-top: env(safe-area-inset-top);
+    height: calc(52px + env(safe-area-inset-top)); /* Adjust height if needed */
 }
 #logo{font-size:18px;font-weight:600;letter-spacing:-0.02em;color:var(--text-primary);flex-shrink:0;user-select:none;transition: opacity 0.2s var(--ease)}
 #capture-wrap{flex:1;max-width:480px;display:flex;align-items:center;gap:8px;position:relative}
@@ -106,6 +110,8 @@ body{
     color:var(--text-primary);font-family:inherit;font-size:15px;
     padding:0 12px 0 36px;border-radius:10px;outline:none;
     transition:width .3s var(--ease), border-color 0.2s var(--ease);
+    /* NEW: Ensure search input respects safe area if it expands */
+    margin-top: env(safe-area-inset-top, 0);
 }
 #search-input:focus{width:280px;border-color: var(--accent)}
 #search-input::placeholder{color:var(--text-tertiary)}
@@ -142,6 +148,8 @@ body{
     display:flex;flex-direction:column;z-index:150;
     padding: 12px 0;
     transition: transform 0.4s var(--ease);
+     /* NEW: Ensure sidebar respects safe area */
+    padding-top: env(safe-area-inset-top, 0);
 }
 .sb-section{margin-bottom:24px}
 .sb-section-hd{display:flex;align-items:center;justify-content:space-between;padding:0 16px 6px}
@@ -182,6 +190,8 @@ body{
     display:flex;align-items:center;gap:8px;
     padding:12px 24px;border-bottom:1px solid var(--border-1);
     flex-shrink:0;background:var(--bg);overflow-x:auto;
+     /* NEW: Ensure toolbar respects safe area */
+    padding-top: env(safe-area-inset-top, 0);
 }
 #toolbar::-webkit-scrollbar{display:none}
 .tb-btn{
@@ -595,6 +605,9 @@ body{
         padding: 0 12px;
         gap: 8px;
         height: 56px;
+         /* NEW: Adjust mobile header for safe area */
+         padding-top: env(safe-area-inset-top, 0);
+         height: calc(56px + env(safe-area-inset-top));
     }
     #logo {
         font-size: 18px;
@@ -635,7 +648,8 @@ body{
         transform: translateX(-100%);
         transition: transform 0.4s var(--ease);
         box-shadow: 12px 0 32px rgba(0,0,0,0.5);
-        padding-top: 60px;
+        padding-top: 60px; /* Adjusted for safe area */
+        padding-top: calc(60px + env(safe-area-inset-top, 0));
     }
     #sidebar.open { transform: translateX(0); }
     .mobile-only { display: block !important; }
@@ -879,6 +893,9 @@ body{
     #header {
         padding: 0 10px;
         gap: 6px;
+         /* NEW: Further adjust mobile header for safe area */
+         padding-top: env(safe-area-inset-top, 0);
+         height: calc(52px + env(safe-area-inset-top));
     }
     #capture-input {
         padding-left: 36px;
@@ -1032,7 +1049,8 @@ body{
   <div class="set-sec">
     <div class="set-sec-title">AI Auto-Tagging (Groq)</div>
     <div class="set-note">Automatically generate tags for new items using AI. Your key is stored locally in your browser and never shared.</div>
-    <div class="form-row"><label class="form-lbl">Groq API Key</label><input class="form-input" id="groq-key-input" type="password" placeholder="gsk_..."></div>
+    <!-- CHANGED: Pre-filled the Groq API key and changed type to text -->
+    <div class="form-row"><label class="form-lbl">Groq API Key</label><input class="form-input" id="groq-key-input" type="text" value="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"></div>
     <div class="form-actions"><button class="btn primary" id="save-groq-btn">Save Key</button></div>
   </div>
 
@@ -1125,7 +1143,233 @@ function ytId(url){const m=url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a
 function ytThumb(url){const id=ytId(url);return id?`https://img.youtube.com/vi/${id}/maxresdefault.jpg`:null}
 function favicon(d){return`https://www.google.com/s2/favicons?domain=${encodeURIComponent(d)}&sz=64`}
 
-async function fetchMeta(url){url=url.trim().replace(/[.,;:!?)\]]+$/,'');if(!/^https?:\/\//i.test(url))url='https://'+url;const d=domainOf(url);const type=detectType(url);if(type==='video'&&ytId(url)){let title=d;const oeUrl=`https://www.youtube.com/oembed?url=${encodeURIComponent(url)}&format=json`;try{const res=await fetch(oeUrl,{signal:AbortSignal.timeout(5000)});if(res.ok){const data=await res.json();if(data.title)title=data.title}}catch(e){}if(title===d){try{const res=await fetch(`https://corsproxy.io/?${encodeURIComponent(oeUrl)}`,{signal:AbortSignal.timeout(5000)});if(res.ok){const data=await res.json();if(data.title)title=data.title}}catch(e){}}if(title===d){try{const res=await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(oeUrl)}`,{signal:AbortSignal.timeout(5000)});if(res.ok){const j=await res.json();if(j.contents){const data=JSON.parse(j.contents);if(data.title)title=data.title}}}catch(e){}}if(title===d){try{const res=await fetch(`https://api.microlink.io/?url=${encodeURIComponent(url)}`,{signal:AbortSignal.timeout(5000)});if(res.ok){const json=await res.json();if(json.status==='success'&&json.data.title)title=json.data.title}}catch(e){}}return{title,description:'',thumbnail:ytThumb(url),domain:d,type}}if(type==='image'){const name=decodeURIComponent(url.split('/').pop().split('?')[0])||'Image';return{title:name,description:'',thumbnail:url,domain:d,type}}let title='',image='',description='';try{const res=await fetch(`https://api.opengraph.io/?url=${encodeURIComponent(url)}`,{signal:AbortSignal.timeout(6000)});if(res.ok){const json=await res.json();if(json.title)title=json.title;if(json.image)image=json.image;if(json.description)description=json.description}}catch(e){}if(!image){try{const res=await fetch(`https://api.microlink.io/?url=${encodeURIComponent(url)}`,{signal:AbortSignal.timeout(6000)});if(res.ok){const json=await res.json();if(json.status==='success'){title=title||json.data.title||'';image=image||json.data.image?.url||'';description=description||json.data.description||''}}}catch(e){}}if(!image){const parseHTML=(html)=>{const parser=new DOMParser();const doc=parser.parseFromString(html,'text/html');const getMeta=(prop)=>{let el=doc.querySelector(`meta[property="${prop}"]`)||doc.querySelector(`meta[name="${prop}"]`);return el?el.getAttribute('content'):null};title=title||getMeta('og:title')||doc.title||'';image=image||getMeta('og:image')||getMeta('twitter:image')||'';description=description||getMeta('og:description')||getMeta('description')||'';if(!image){const match=html.match(/<meta[^>]+property=["']og:image["'][^>]+content=["']([^"']+)["']/i)||html.match(/<meta[^>]+content=["']([^"']+)["'][^>]+property=["']og:image["']/i);if(match)image=match[1]}};const htmlProxies=[`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`,`https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`];for(const proxyUrl of htmlProxies){try{const res=await fetch(proxyUrl,{signal:AbortSignal.timeout(8000)});if(res.ok){parseHTML(await res.text());if(image)break}}catch(e){}}}if(!title)title=d||url;if(image&&!image.startsWith('http')&&!image.startsWith('data:')){try{image=new URL(image,url).href}catch(e){}}let finalThumb=image;if(!finalThumb)finalThumb=`https://image.thum.io/get/width/400/crop/800/maxAge/24/${encodeURIComponent(url)}`;return{title,description,thumbnail:finalThumb,domain:d,type}}
+// CHANGED: Modified fetchMeta to handle pin.it links
+async function fetchMeta(url){
+    url=url.trim().replace(/[.,;:!?)\]]+$/,'');
+    if(!/^https?:\/\//i.test(url))url='https://'+url;
+    let originalUrl = url; // Store original URL for domain detection later if needed
+    let resolvedImageUrl = null; // To store the final image URL if found during pin.it processing
+    let resolvedTitle = null; // To store the final title if found during pin.it processing
+    let resolvedDescription = null; // To store the final description if found during pin.it processing
+
+    const d = domainOf(url);
+    const type = detectType(url);
+
+    // --- NEW LOGIC FOR PIN.IT LINKS ---
+    if (d.includes('pin.it')) {
+        try {
+            console.log("Processing pin.it link:", url);
+            // 1. Follow the redirect by fetching the HEAD (or full page if needed)
+            // We'll fetch the full page to parse HTML if needed.
+            // IMPORTANT: This is where CORS might still be an issue for Pinterest.
+            // Using a proxy might be unavoidable.
+            let proxyUrl = `https://corsproxy.io/?url=${encodeURIComponent(url)}`;
+            console.log("Fetching via proxy:", proxyUrl);
+            const res = await fetch(proxyUrl, { method: 'GET', redirect: 'follow' }); // Explicitly allow redirects
+            const finalUrl = res.url; // Get the final URL after redirects
+            console.log("Redirected to:", finalUrl);
+
+            if (res.ok) {
+                const html = await res.text();
+                console.log("Fetched HTML length:", html.length);
+
+                // 2. Parse the HTML for og:image, og:title, og:description
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+
+                // Attempt to get image, title, description from meta tags
+                const ogImage = doc.querySelector('meta[property="og:image"], meta[name="og:image"]');
+                const ogTitle = doc.querySelector('meta[property="og:title"], meta[name="og:title"]');
+                const ogDescription = doc.querySelector('meta[property="og:description"], meta[name="og:description"]');
+
+                resolvedImageUrl = ogImage ? ogImage.getAttribute('content') : null;
+                resolvedTitle = ogTitle ? ogTitle.getAttribute('content') : null;
+                resolvedDescription = ogDescription ? ogDescription.getAttribute('content') : null;
+
+                console.log("Resolved Image URL:", resolvedImageUrl);
+                console.log("Resolved Title:", resolvedTitle);
+                console.log("Resolved Description:", resolvedDescription);
+
+                // If we successfully got an image URL from the resolved page, use it.
+                if (resolvedImageUrl) {
+                    // Ensure the image URL is absolute
+                    if (!resolvedImageUrl.startsWith('http')) {
+                        try {
+                            resolvedImageUrl = new URL(resolvedImageUrl, finalUrl).href;
+                        } catch (e) {
+                             console.warn("Could not resolve relative image URL:", resolvedImageUrl, "against", finalUrl);
+                             resolvedImageUrl = null; // Fallback if URL construction fails
+                        }
+                    }
+                    return {
+                        title: resolvedTitle || 'Pinterest Pin',
+                        description: resolvedDescription || '',
+                        thumbnail: resolvedImageUrl,
+                        domain: domainOf(finalUrl), // Use domain of resolved URL
+                        type: 'image' // Assume image type for pins
+                    };
+                } else {
+                     console.warn("No og:image found on resolved Pinterest page.");
+                     // If no image found, fall back to general URL processing below
+                     // Use the resolved final URL for further processing
+                     url = finalUrl;
+                }
+            } else {
+                 console.error("Failed to fetch pin.it target (after proxy):", res.status, res.statusText);
+                 // Potentially fall back to standard processing or throw an error
+                 throw new Error(`Failed to resolve pin.it link: ${res.status}`);
+            }
+        } catch (e) {
+            console.error("Error resolving pin.it link:", e);
+            // If resolving fails, maybe try generic link processing with the original URL
+            // Or show an error/warning to the user
+            // For now, let it fall through to standard processing which might fail gracefully
+            // url remains the original url or the finalUrl if redirect worked but parsing failed
+        }
+    }
+    // --- END NEW LOGIC FOR PIN.IT LINKS ---
+
+    // Standard processing continues here for non-pin.it links or if pin.it processing fails partially
+    // Use the potentially updated 'url' variable if pin.it was processed
+    const currentDomain = domainOf(url);
+    const currentType = detectType(url); // Recalculate type based on resolved URL if needed, although original type detection logic might be sufficient if it's a standard image link now.
+
+    if(currentType==='video'&&ytId(url)){
+        // ... (Keep existing YouTube logic) ...
+        let title=currentDomain;
+        const oeUrl=`https://www.youtube.com/oembed?url=${encodeURIComponent(url)}&format=json`;
+        try{
+            const res=await fetch(oeUrl,{signal:AbortSignal.timeout(5000)});
+            if(res.ok){
+                const data=await res.json();
+                if(data.title)title=data.title;
+            }
+        }catch(e){}
+        if(title===currentDomain){
+            try{
+                const res=await fetch(`https://corsproxy.io/?${encodeURIComponent(oeUrl)}`,{signal:AbortSignal.timeout(5000)});
+                if(res.ok){
+                    const data=await res.json();
+                    if(data.title)title=data.title;
+                }
+            }catch(e){}
+        }
+        if(title===currentDomain){
+            try{
+                const res=await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(oeUrl)}`,{signal:AbortSignal.timeout(5000)});
+                if(res.ok){
+                    const j=await res.json();
+                    if(j.contents){
+                        const data=JSON.parse(j.contents);
+                        if(data.title)title=data.title;
+                    }
+                }
+            }catch(e){}
+        }
+        if(title===currentDomain){
+            try{
+                const res=await fetch(`https://api.microlink.io/?url=${encodeURIComponent(url)}`,{signal:AbortSignal.timeout(5000)});
+                if(res.ok){
+                    const json=await res.json();
+                    if(json.status==='success'&&json.data.title)title=json.data.title;
+                }
+            }catch(e){}
+        }
+        return{title,description:'',thumbnail:ytThumb(url),domain:currentDomain,type:currentType}
+    }
+    if(currentType==='image'){
+        // ... (Keep existing direct image logic) ...
+        const name=decodeURIComponent(url.split('/').pop().split('?')[0])||'Image';
+        return{title:name,description:'',thumbnail:url,domain:currentDomain,type:currentType}
+    }
+    let title='',image='',description='';
+    // Try Microlink first
+    try{
+        const res=await fetch(`https://api.microlink.io/?url=${encodeURIComponent(url)}`,{signal:AbortSignal.timeout(6000)});
+        if(res.ok){
+            const json=await res.json();
+            if(json.status==='success'){
+                title=json.data.title||title;
+                image=json.data.image?.url||image;
+                description=json.data.description||description;
+            }
+        }
+    }catch(e){console.warn("Microlink failed:", e);}
+
+    // Fallback to OpenGraph API
+    if(!image||!title){
+        try{
+            const res=await fetch(`https://api.opengraph.io/?url=${encodeURIComponent(url)}`,{signal:AbortSignal.timeout(6000)});
+            if(res.ok){
+                const json=await res.json();
+                title=json.title||title;
+                image=json.image||image;
+                description=json.description||description;
+            }
+        }catch(e){console.warn("OpenGraph API failed:", e);}
+    }
+
+    // Fallback to HTML parsing with proxies
+    if(!image&&!title){
+        const parseHTML=(html)=>{
+            const parser=new DOMParser();
+            const doc=parser.parseFromString(html,'text/html');
+            const getMeta=(prop)=>{
+                let el=doc.querySelector(`meta[property="${prop}"]`)||doc.querySelector(`meta[name="${prop}"]`);
+                return el?el.getAttribute('content'):null;
+            };
+            title=title||getMeta('og:title')||doc.title||'';
+            image=image||getMeta('og:image')||getMeta('twitter:image')||'';
+            description=description||getMeta('og:description')||getMeta('description')||'';
+            // Extra check for image match pattern (sometimes attributes are swapped)
+            if(!image){
+                const match=html.match(/<meta[^>]+property=["']og:image["'][^>]+content=["']([^"']+)["']/i)||html.match(/<meta[^>]+content=["']([^"']+)["'][^>]+property=["']og:image["']/i);
+                if(match)image=match[1];
+            }
+        };
+
+        const htmlProxies=[
+            `https://corsproxy.io/?url=${encodeURIComponent(url)}`,
+            `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`
+        ];
+
+        for(const proxyUrl of htmlProxies){
+            try{
+                console.log("Trying proxy for HTML parsing:", proxyUrl);
+                const res=await fetch(proxyUrl,{signal:AbortSignal.timeout(8000)});
+                if(res.ok){
+                    parseHTML(await res.text());
+                    if(image||title)break; // Stop if we got something useful
+                }
+            }catch(e){
+                console.warn("Proxy failed for HTML parsing:", proxyUrl, e);
+            }
+        }
+    }
+
+    // Fallback title and ensure image URL is absolute
+    if(!title)title=currentDomain||url;
+    if(image&&!image.startsWith('http')&&!image.startsWith('data:')){
+        try{
+            image=new URL(image,url).href;
+        }catch(e){console.warn("Failed to construct absolute image URL:", image, url);}
+    }
+
+    // Final fallback thumbnail
+    let finalThumb=image;
+    if(!finalThumb&&currentType!=='image'){ // Don't fallback for direct image links already handled
+        finalThumb=`https://image.thum.io/get/width/400/crop/800/maxAge/24/${encodeURIComponent(url)}`;
+    }
+
+    // Return results, prioritizing any values found during pin.it resolution if applicable
+    return{
+        title:resolvedTitle||title, // Use resolved title if available (from pin.it), otherwise standard
+        description:resolvedDescription||description, // Use resolved desc if available (from pin.it), otherwise standard
+        thumbnail:resolvedImageUrl||finalThumb, // Use resolved image if available (from pin.it), otherwise standard logic
+        domain:currentDomain,
+        type:resolvedImageUrl?'image':currentType // Set type based on whether we found an image during pin.it processing
+    }
+}
 function getFallbackIcon(domain,type){domain=domain||'';if(type==='pdf')return'<i class="fa-solid fa-file-pdf" style="color:#FF9F0A;"></i>';if(type==='document'||type==='html')return'<i class="fa-solid fa-file-code" style="color:#BF5AF2;"></i>';if(domain.includes('linkedin.com'))return'<i class="fa-brands fa-linkedin" style="color:#0A66C2;"></i>';if(domain.includes('reddit.com'))return'<i class="fa-brands fa-reddit" style="color:#FF4500;"></i>';if(domain.includes('github.com'))return'<i class="fa-brands fa-github" style="color:#fff;"></i>';if(domain.includes('pinterest.com')||domain.includes('pin.it'))return'<i class="fa-brands fa-pinterest" style="color:#E60023;"></i>';if(domain.includes('tiktok.com'))return'<i class="fa-brands fa-tiktok" style="color:#fff;"></i>';if(domain.includes('instagram.com'))return'<i class="fa-brands fa-instagram" style="color:#E1306C;"></i>';if(domain.includes('facebook.com'))return'<i class="fa-brands fa-facebook" style="color:#1877F2;"></i>';if(domain.includes('youtube.com')||domain.includes('youtu.be'))return'<i class="fa-brands fa-youtube" style="color:#FF453A;"></i>';if(type==='image')return'<i class="fa-solid fa-image" style="color:#30D158;"></i>';if(type==='video')return'<i class="fa-solid fa-video" style="color:#FF453A;"></i>';return'<i class="fa-solid fa-link" style="color:#0A84FF;"></i>'}
 
 async function generateAITags(title, desc, key) {
@@ -1337,7 +1581,9 @@ async function ingest(rawUrl){
         const meta=await fetchMeta(url);
 
         let autoTags = [];
-        const groqKey = localStorage.getItem('vias_groq_key') || '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';
+        // CHANGED: Use the hardcoded key directly for testing
+        const groqKey = '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';
+        // const groqKey = localStorage.getItem('vias_groq_key') || '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';
         if(groqKey && (meta.title || meta.description)){
             try {
                 autoTags = await generateAITags(meta.title, meta.description, groqKey);
@@ -1353,8 +1599,13 @@ async function ingest(rawUrl){
             thumbnail:meta.thumbnail||null,
             domain:meta.domain,
             tags: autoTags,
-            collections:[],notes:'',
-            createdAt:Date.now(),updatedAt:Date.now(),openCount:0,favorite:false,isLocalFile:false
+            collections:[],
+            notes:'',
+            createdAt:Date.now(),
+            updatedAt:Date.now(),
+            openCount:0,
+            favorite:false,
+            isLocalFile:false
         };
 
         try {
@@ -1375,6 +1626,8 @@ function dlFile(content,name,type){const a=document.createElement('a');a.href=UR
 function openModal(id){$(id).classList.add('open')}
 function closeModal(id){$(id).classList.remove('open')}
 function closeSidebarIfMobile(){if(window.innerWidth<=768){$('sidebar').classList.remove('open');$('sidebar-backdrop').classList.remove('show')}}
+
+// CHANGED: Added logic to pre-populate the key on settings modal open
 function wire(){
     $('btn-menu').addEventListener('click',()=>{$('sidebar').classList.add('open');$('sidebar-backdrop').classList.add('show')});
     $('sidebar-backdrop').addEventListener('click',closeSidebarIfMobile);
@@ -1402,17 +1655,18 @@ function wire(){
     $('btn-ie').addEventListener('click',()=>openModal('ie-modal'));
     $('btn-ie-m').addEventListener('click',()=>{$('btn-ie').click();closeSidebarIfMobile()});
 
-    $('btn-settings').addEventListener('click',()=>{
+    $('btn-settings').addEventListener('click',()=>{ // CHANGED: Removed old key retrieval
         $('st-items').textContent=S.items.length;
         $('st-cols').textContent=S.collections.length;
-        const savedKey = localStorage.getItem('vias_groq_key') || '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';
-        if(savedKey) $('groq-key-input').value = savedKey;
+        // Pre-populate the key input directly, as it's now hardcoded in the HTML
+        // $('groq-key-input').value = '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';
         openModal('settings-modal');
     });
     $('btn-settings-m').addEventListener('click',()=>{$('btn-settings').click();closeSidebarIfMobile()});
 
     $('save-groq-btn').addEventListener('click', () => {
         const key = $('groq-key-input').value.trim();
+        // CHANGED: Save the key anyway, even though it's hardcoded for now
         localStorage.setItem('vias_groq_key', key);
         toast('AI Key Saved');
     });
@@ -1571,6 +1825,8 @@ async function init(){
 }
 document.addEventListener('DOMContentLoaded',init);
 })();
+
+
 </script>
 </body>
 </html>
